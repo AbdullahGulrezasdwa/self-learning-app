@@ -7,37 +7,44 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
+  <div class="container">
     <h1>Self Learning App</h1>
 
+    <!-- Dashboard -->
     <div id="dashboard">
-      <label>Choose Topic:
-        <select id="topicSelect">
-          <option value="Math">Math</option>
-          <option value="Science">Science</option>
-        </select>
+      <label>Select Topic:
+        <select id="topicSelect"></select>
       </label>
-      <button onclick="startFlashcards()">Start Flashcards</button>
-      <button onclick="startQuiz()">Start Quiz</button>
-      <button onclick="reviewWeak()">Review Weak Questions</button>
-    </div>
-
-    <div id="flashcardSection" style="display:none;">
-      <div id="flashcard">
-        <p id="question"></p>
-        <button onclick="flipFlashcard()">Show Answer</button>
+      <div class="buttons">
+        <button onclick="startFlashcards()">Start Flashcards</button>
+        <button onclick="startQuiz()">Start Quiz</button>
+        <button onclick="reviewWeak()">Review Weak Questions</button>
       </div>
-      <button onclick="markCorrect()">Correct</button>
-      <button onclick="markIncorrect()">Incorrect</button>
-      <button onclick="backToDashboard()">Back</button>
+      <div id="progressDashboard"></div>
     </div>
 
-    <div id="quizSection" style="display:none;">
+    <!-- Flashcards -->
+    <div id="flashcardSection" class="hidden">
+      <div id="flashcard" class="card">
+        <p id="question"></p>
+      </div>
+      <div class="buttons">
+        <button onclick="flipFlashcard()">Show Answer</button>
+        <button onclick="markCorrect()">Correct</button>
+        <button onclick="markIncorrect()">Incorrect</button>
+        <button onclick="backToDashboard()">Back</button>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quizSection" class="hidden">
       <p id="quizQuestion"></p>
-      <input type="text" id="quizAnswer">
-      <button onclick="submitQuizAnswer()">Submit</button>
+      <input type="text" id="quizAnswer" placeholder="Type your answer">
+      <div class="buttons">
+        <button onclick="submitQuizAnswer()">Submit</button>
+        <button onclick="backToDashboard()">Back</button>
+      </div>
       <p id="quizFeedback"></p>
-      <button onclick="backToDashboard()">Back</button>
     </div>
   </div>
 

@@ -1,1 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
 
+#flashcard {
+  border: 2px solid #333;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+}

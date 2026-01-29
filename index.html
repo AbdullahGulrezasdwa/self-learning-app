@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self Learning App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Self Learning App</h1>
 
+    <div id="dashboard">
+      <label>Choose Topic:
+        <select id="topicSelect">
+          <option value="Math">Math</option>
+          <option value="Science">Science</option>
+        </select>
+      </label>
+      <button onclick="startFlashcards()">Start Flashcards</button>
+      <button onclick="startQuiz()">Start Quiz</button>
+      <button onclick="reviewWeak()">Review Weak Questions</button>
+    </div>
+
+    <div id="flashcardSection" style="display:none;">
+      <div id="flashcard">
+        <p id="question"></p>
+        <button onclick="flipFlashcard()">Show Answer</button>
+      </div>
+      <button onclick="markCorrect()">Correct</button>
+      <button onclick="markIncorrect()">Incorrect</button>
+      <button onclick="backToDashboard()">Back</button>
+    </div>
+
+    <div id="quizSection" style="display:none;">
+      <p id="quizQuestion"></p>
+      <input type="text" id="quizAnswer">
+      <button onclick="submitQuizAnswer()">Submit</button>
+      <p id="quizFeedback"></p>
+      <button onclick="backToDashboard()">Back</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

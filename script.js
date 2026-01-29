@@ -1,41 +1,61 @@
-// Sample questions
-let curriculum = {
-  Math: [
-    {question: "2+2?", answer: "4", status:"learning"},
-    {question: "5*3?", answer: "15", status:"learning"}
-  ],
-  Science: [
-    {question: "Water formula?", answer: "H2O", status:"learning"},
-    {question: "Sun is a ___?", answer: "Star", status:"learning"}
-  ]
-};
-
-let currentTopic = "Math";
+// ===== Load Curriculum =====
+let curriculum = {};
+let currentTopic = "";
 let currentIndex = 0;
-let currentMode = "flashcard";
+let currentMode = "flashcard"; // flashcard, quiz, review
 
-// Load progress from localStorage
-function loadProgress() {
-  let data = localStorage.getItem("progress");
-  if(data) curriculum = JSON.parse(data);
+// Load from JSON or localStorage
+async function loadCurriculum() {
+  const response = await fetch('curriculum.json');
+  curriculum = await response.json();
+
+  // Load progress from localStorage
+  const saved = localStorage.getItem('progress');
+  if(saved) curriculum = JSON.parse(saved);
+
+  populateTopics();
+  updateProgressDashboard();
 }
+
 function saveProgress() {
-  localStorage.setItem("progress", JSON.stringify(curriculum));
+  localStorage.setItem('progress', JSON.stringify(curriculum));
 }
 
-// Dashboard actions
+// Populate dropdown
+function populateTopics() {
+  const select = document.getElementById('topicSelect');
+  select.innerHTML = '';
+  for(let topic in curriculum){
+    let opt = document.createElement('option');
+    opt.value = topic;
+    opt.textContent = topic;
+    select.appendChild(opt);
+  }
+}
+
+// ===== Sections =====
+function showSection(section) {
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('flashcardSection').classList.add('hidden');
+  document.getElementById('quizSection').classList.add('hidden');
+
+  if(section==="dashboard") document.getElementById('dashboard').classList.remove('hidden');
+  if(section==="flashcard") document.getElementById('flashcardSection').classList.remove('hidden');
+  if(section==="quiz") document.getElementById('quizSection').classList.remove('hidden');
+}
+
+// ===== Flashcards =====
 function startFlashcards() {
-  currentTopic = document.getElementById("topicSelect").value;
+  currentTopic = document.getElementById('topicSelect').value;
   currentIndex = 0;
   currentMode = "flashcard";
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("flashcardSection").style.display="block";
+  showSection("flashcard");
   showFlashcard();
 }
 
 function showFlashcard() {
   let q = curriculum[currentTopic][currentIndex];
-  document.getElementById("question").innerText = q.question;
+  document.getElementById('question').innerText = q.question;
 }
 
 function flipFlashcard() {
@@ -44,12 +64,14 @@ function flipFlashcard() {
 }
 
 function markCorrect() {
-  curriculum[currentTopic][currentIndex].status = "mastered";
+  let q = curriculum[currentTopic][currentIndex];
+  q.status = "mastered";
   nextFlashcard();
 }
 
 function markIncorrect() {
-  curriculum[currentTopic][currentIndex].status = "weak";
+  let q = curriculum[currentTopic][currentIndex];
+  q.status = "weak";
   nextFlashcard();
 }
 
@@ -64,57 +86,84 @@ function nextFlashcard() {
   saveProgress();
 }
 
-function backToDashboard() {
-  document.getElementById("dashboard").style.display="block";
-  document.getElementById("flashcardSection").style.display="none";
-  document.getElementById("quizSection").style.display="none";
-}
-
-// Quiz Mode
+// ===== Quiz =====
 let quizIndex = 0;
 function startQuiz() {
-  currentTopic = document.getElementById("topicSelect").value;
+  currentTopic = document.getElementById('topicSelect').value;
   quizIndex = 0;
   currentMode = "quiz";
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("quizSection").style.display="block";
+  showSection("quiz");
   showQuiz();
 }
 
 function showQuiz() {
   let q = curriculum[currentTopic][quizIndex];
-  document.getElementById("quizQuestion").innerText = q.question;
-  document.getElementById("quizAnswer").value="";
-  document.getElementById("quizFeedback").innerText="";
+  document.getElementById('quizQuestion').innerText = q.question;
+  document.getElementById('quizAnswer').value = '';
+  document.getElementById('quizFeedback').innerText = '';
 }
 
 function submitQuizAnswer() {
-  let userAns = document.getElementById("quizAnswer").value.trim();
+  let userAns = document.getElementById('quizAnswer').value.trim();
   let q = curriculum[currentTopic][quizIndex];
-  if(userAns.toLowerCase() === q.answer.toLowerCase()) {
-    q.status="mastered";
-    document.getElementById("quizFeedback").innerText="Correct!";
+
+  if(userAns.toLowerCase() === q.answer.toLowerCase()){
+    q.status = "mastered";
+    document.getElementById('quizFeedback').innerText = "Correct!";
   } else {
-    q.status="weak";
-    document.getElementById("quizFeedback").innerText="Wrong! Correct: "+q.answer;
+    q.status = "weak";
+    document.getElementById('quizFeedback').innerText = "Wrong! Correct: " + q.answer;
   }
   quizIndex++;
   saveProgress();
+
   if(quizIndex < curriculum[currentTopic].length){
     setTimeout(showQuiz, 1000);
   } else {
-    setTimeout(() => {alert("Quiz finished!"); backToDashboard();}, 1000);
+    setTimeout(()=>{
+      alert("Quiz finished!");
+      backToDashboard();
+      updateProgressDashboard();
+    },1000);
   }
 }
 
-// Review Weak
+// ===== Review Weak =====
 function reviewWeak() {
-  currentTopic = document.getElementById("topicSelect").value;
-  let weakQuestions = curriculum[currentTopic].filter(q => q.status==="weak");
-  if(weakQuestions.length ===0){alert("No weak questions!"); return;}
-  curriculum[currentTopic]=weakQuestions;
-  startFlashcards();
+  currentTopic = document.getElementById('topicSelect').value;
+  let weakQs = curriculum[currentTopic].filter(q => q.status==="weak");
+  if(weakQs.length===0){
+    alert("No weak questions!");
+    return;
+  }
+  curriculum[currentTopic] = weakQs;
+  currentIndex = 0;
+  currentMode = "review";
+  showSection("flashcard");
+  showFlashcard();
 }
 
-// Initialize
-loadProgress();
+// ===== Back to Dashboard =====
+function backToDashboard() {
+  showSection("dashboard");
+  updateProgressDashboard();
+}
+
+// ===== Progress Dashboard =====
+function updateProgressDashboard() {
+  let container = document.getElementById('progressDashboard');
+  container.innerHTML = '';
+  for(let topic in curriculum){
+    let mastered = curriculum[topic].filter(q => q.status==="mastered").length;
+    let total = curriculum[topic].length;
+    let percent = Math.round((mastered/total)*100);
+    let grade = percent>=80?"A":percent>=60?"B":percent>=40?"C":"F";
+
+    let div = document.createElement('div');
+    div.innerHTML = `<strong>${topic}</strong> - Mastered: ${percent}% - Grade: ${grade}`;
+    container.appendChild(div);
+  }
+}
+
+// ===== Init =====
+loadCurriculum();

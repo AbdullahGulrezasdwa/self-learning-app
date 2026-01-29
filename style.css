@@ -1,20 +1,54 @@
 body {
   font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
 }
 
-#flashcard {
-  border: 2px solid #333;
+.container {
+  max-width: 600px;
+  margin: 30px auto;
   padding: 20px;
-  margin: 20px 0;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   text-align: center;
-  font-size: 1.2em;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.buttons {
+  margin-top: 15px;
 }
 
 button {
   margin: 5px;
   padding: 10px 20px;
+  border: none;
+  background: #007BFF;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
+button:hover {
+  background: #0056b3;
+}
+
+.hidden {
+  display: none;
+}
+
+.card {
+  border: 2px solid #007BFF;
+  padding: 30px;
+  margin: 20px 0;
+  border-radius: 12px;
+  font-size: 1.3em;
+  background: #e6f0ff;
+  cursor: pointer;
+  transition: transform 0.4s;
+}

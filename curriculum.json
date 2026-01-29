@@ -1,1 +1,11 @@
-
+{
+  "Math": [
+    {"question": "2 + 2?", "answer": "4", "status": "learning", "userAnswer": ""},
+    {"question": "5 * 3?", "answer": "15", "status": "learning", "userAnswer": ""},
+    {"question": "Square root of 16?", "answer": "4", "status": "learning", "userAnswer": ""}
+  ],
+  "Science": [
+    {"question": "Water formula?", "answer": "H2O", "status": "learning", "userAnswer": ""},
+    {"question": "Sun is a ___?", "answer": "Star", "status": "learning", "userAnswer": ""}
+  ]
+}
